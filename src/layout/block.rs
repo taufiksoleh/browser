@@ -56,7 +56,7 @@ impl<'a> BlockContext<'a> {
 
     /// Calculate block position
     fn calculate_position(&mut self, id: LayoutId) {
-        let (container_x, container_y) = (
+        let (container_x, _container_y) = (
             self.containing_block.content.x,
             self.containing_block.content.y,
         );

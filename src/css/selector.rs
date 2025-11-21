@@ -240,19 +240,19 @@ impl Selector {
         }
 
         // [attr=value] cases
-        let (name, op, value) = if let Some(pos) = s.find("=") {
+        let (name, op, value) = if let Some(pos) = s.find('=') {
             let (n, v) = s.split_at(pos);
             let v = &v[1..]; // Skip =
-            let (n, op) = if n.ends_with('~') {
-                (&n[..n.len() - 1], AttributeOp::Contains)
-            } else if n.ends_with('|') {
-                (&n[..n.len() - 1], AttributeOp::StartsWith)
-            } else if n.ends_with('^') {
-                (&n[..n.len() - 1], AttributeOp::Prefix)
-            } else if n.ends_with('$') {
-                (&n[..n.len() - 1], AttributeOp::Suffix)
-            } else if n.ends_with('*') {
-                (&n[..n.len() - 1], AttributeOp::Substring)
+            let (n, op) = if let Some(stripped) = n.strip_suffix('~') {
+                (stripped, AttributeOp::Contains)
+            } else if let Some(stripped) = n.strip_suffix('|') {
+                (stripped, AttributeOp::StartsWith)
+            } else if let Some(stripped) = n.strip_suffix('^') {
+                (stripped, AttributeOp::Prefix)
+            } else if let Some(stripped) = n.strip_suffix('$') {
+                (stripped, AttributeOp::Suffix)
+            } else if let Some(stripped) = n.strip_suffix('*') {
+                (stripped, AttributeOp::Substring)
             } else {
                 (n, AttributeOp::Exact)
             };

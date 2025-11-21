@@ -1,3 +1,7 @@
+// Allow dead code for library-style codebase where not all APIs are used in main()
+#![allow(dead_code)]
+#![allow(unused_imports)]
+
 //! Browser - A production-ready web browser in Rust
 //!
 //! Architecture follows multi-process model for security:

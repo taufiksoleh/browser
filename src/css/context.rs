@@ -140,7 +140,7 @@ impl StyleContext {
                 // Apply defaults based on element type
                 let is_block = node
                     .tag_name()
-                    .map(|t| is_block_element(t))
+                    .map(is_block_element)
                     .unwrap_or(false);
                 style.apply_defaults(is_block);
             }

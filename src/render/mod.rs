@@ -10,5 +10,5 @@ mod gpu;
 mod paint;
 mod renderer;
 
-pub use display_list::{DisplayCommand, DisplayItem, DisplayList};
+pub use display_list::{DisplayCommand, DisplayList};
 pub use renderer::Renderer;

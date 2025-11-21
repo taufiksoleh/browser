@@ -82,6 +82,7 @@ impl Default for Color {
 
 /// CSS Length unit
 #[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum Length {
     Px(f32),
     Em(f32),
@@ -90,13 +91,14 @@ pub enum Length {
     Vw(f32),
     Vh(f32),
     Auto,
+    #[default]
     Zero,
 }
 
 impl Length {
     /// Convert to pixels given context
-    pub fn to_px(&self, parent_font_size: f32, root_font_size: f32, viewport: (f32, f32)) -> f32 {
-        match *self {
+    pub fn to_px(self, parent_font_size: f32, root_font_size: f32, viewport: (f32, f32)) -> f32 {
+        match self {
             Length::Px(v) => v,
             Length::Em(v) => v * parent_font_size,
             Length::Rem(v) => v * root_font_size,
@@ -142,16 +144,13 @@ impl Length {
     }
 }
 
-impl Default for Length {
-    fn default() -> Self {
-        Length::Zero
-    }
-}
 
 /// CSS Display value
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default)]
 pub enum Display {
     Block,
+    #[default]
     Inline,
     InlineBlock,
     Flex,
@@ -175,11 +174,6 @@ impl Display {
     }
 }
 
-impl Default for Display {
-    fn default() -> Self {
-        Display::Inline
-    }
-}
 
 /// Generic CSS value
 #[derive(Debug, Clone, PartialEq)]
