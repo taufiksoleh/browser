@@ -115,7 +115,10 @@ impl ApplicationHandler for BrowserApp {
         if self.window.is_none() {
             let window_attrs = WindowAttributes::default()
                 .with_title(&self.config.title)
-                .with_inner_size(LogicalSize::new(self.config.width as f64, self.config.height as f64))
+                .with_inner_size(LogicalSize::new(
+                    self.config.width as f64,
+                    self.config.height as f64,
+                ))
                 .with_min_inner_size(LogicalSize::new(400.0, 300.0));
 
             match event_loop.create_window(window_attrs) {

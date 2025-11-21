@@ -39,8 +39,8 @@ impl Browser {
         let browser = Arc::new(RwLock::new(Self::new()));
 
         // Create event loop (window and renderer are created in the resumed callback)
-        let event_loop = Window::create_event_loop()
-            .map_err(|e| BrowserError::Window(e.to_string()))?;
+        let event_loop =
+            Window::create_event_loop().map_err(|e| BrowserError::Window(e.to_string()))?;
 
         let config = WindowConfig {
             title: "Browser".to_string(),
@@ -51,8 +51,7 @@ impl Browser {
         info!("Browser engine initialized, starting event loop...");
 
         // Run the event loop
-        Window::run(event_loop, browser, config)
-            .map_err(|e| BrowserError::Window(e.to_string()))
+        Window::run(event_loop, browser, config).map_err(|e| BrowserError::Window(e.to_string()))
     }
 
     /// Create a new tab
