@@ -14,55 +14,43 @@ use winit::{
     window::{WindowAttributes, WindowId},
 };
 
-/// Browser window wrapper
-pub struct Window {
-    inner: Arc<winit::window::Window>,
+/// Window configuration for creating windows
+pub struct WindowConfig {
+    pub title: String,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl Window {
-    /// Create a new window
-    pub fn create(
-        _title: &str,
-        _width: u32,
-        _height: u32,
-    ) -> Result<(Self, EventLoop<()>), String> {
+    /// Create the event loop (window is created later in resumed callback)
+    pub fn create_event_loop() -> Result<EventLoop<()>, String> {
         let event_loop =
             EventLoop::new().map_err(|e| format!("Failed to create event loop: {}", e))?;
         event_loop.set_control_flow(ControlFlow::Wait);
-
-        // Window will be created in the event handler
-        let window = Self {
-            inner: Arc::new(
-                // Placeholder - actual window created in resume
-                unsafe { std::mem::zeroed() },
-            ),
-        };
-
-        Ok((window, event_loop))
+        Ok(event_loop)
     }
 
     /// Run the event loop
     pub fn run(
         event_loop: EventLoop<()>,
-        _window: Self,
         browser: Arc<RwLock<Browser>>,
-        renderer: Renderer,
+        config: WindowConfig,
     ) -> Result<(), String> {
-        let mut app = BrowserApp::new(browser, renderer);
+        let mut app = BrowserApp::new(browser, config);
         event_loop
             .run_app(&mut app)
             .map_err(|e| format!("Event loop error: {}", e))
     }
+}
 
-    /// Get inner window size
-    pub fn inner_size(&self) -> (u32, u32) {
-        // Default size until window is created
-        (1280, 720)
-    }
+/// Browser window wrapper (used after window is created)
+pub struct Window;
 
-    /// Get raw window handle for wgpu
-    pub fn raw_window(&self) -> Arc<winit::window::Window> {
-        self.inner.clone()
+impl Window {
+    /// Get inner window size from a winit window
+    pub fn inner_size_from(window: &winit::window::Window) -> (u32, u32) {
+        let size = window.inner_size();
+        (size.width, size.height)
     }
 }
 
@@ -72,17 +60,17 @@ struct BrowserApp {
     renderer: Option<Renderer>,
     window: Option<Arc<winit::window::Window>>,
     input: InputState,
-    pending_renderer: Option<Renderer>,
+    config: WindowConfig,
 }
 
 impl BrowserApp {
-    fn new(browser: Arc<RwLock<Browser>>, renderer: Renderer) -> Self {
+    fn new(browser: Arc<RwLock<Browser>>, config: WindowConfig) -> Self {
         Self {
             browser,
             renderer: None,
             window: None,
             input: InputState::new(),
-            pending_renderer: Some(renderer),
+            config,
         }
     }
 
@@ -126,8 +114,8 @@ impl ApplicationHandler for BrowserApp {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_none() {
             let window_attrs = WindowAttributes::default()
-                .with_title("Browser")
-                .with_inner_size(LogicalSize::new(1280.0, 720.0))
+                .with_title(&self.config.title)
+                .with_inner_size(LogicalSize::new(self.config.width as f64, self.config.height as f64))
                 .with_min_inner_size(LogicalSize::new(400.0, 300.0));
 
             match event_loop.create_window(window_attrs) {
@@ -135,13 +123,16 @@ impl ApplicationHandler for BrowserApp {
                     let window = Arc::new(window);
                     self.window = Some(window.clone());
 
-                    // Initialize renderer with actual window
-                    if self.pending_renderer.is_some() {
-                        // Renderer was pre-created, just store it
-                        self.renderer = self.pending_renderer.take();
+                    // Create renderer now that we have a real window
+                    match Renderer::new_with_window(window.clone()) {
+                        Ok(renderer) => {
+                            self.renderer = Some(renderer);
+                            log::info!("Window and renderer created successfully");
+                        }
+                        Err(e) => {
+                            log::error!("Failed to create renderer: {}", e);
+                        }
                     }
-
-                    log::info!("Window created successfully");
                 }
                 Err(e) => {
                     log::error!("Failed to create window: {}", e);

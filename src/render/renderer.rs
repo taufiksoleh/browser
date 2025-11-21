@@ -2,7 +2,7 @@
 
 use crate::render::gpu::{create_rect_vertices, Uniforms, Vertex, SHADER_SOURCE};
 use crate::render::{DisplayCommand, DisplayList};
-use crate::ui::Window;
+use std::sync::Arc;
 use wgpu::util::DeviceExt;
 
 /// GPU Renderer
@@ -19,12 +19,13 @@ pub struct Renderer {
 
 impl Renderer {
     /// Create a new renderer for the given window
-    pub fn new(window: &Window) -> Result<Self, String> {
-        pollster::block_on(Self::new_async(window))
+    pub fn new_with_window(window: Arc<winit::window::Window>) -> Result<Self, String> {
+        pollster::block_on(Self::new_async_with_window(window))
     }
 
-    async fn new_async(window: &Window) -> Result<Self, String> {
-        let size = window.inner_size();
+    async fn new_async_with_window(window: Arc<winit::window::Window>) -> Result<Self, String> {
+        let inner_size = window.inner_size();
+        let size = (inner_size.width, inner_size.height);
 
         // Create wgpu instance
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
@@ -34,7 +35,7 @@ impl Renderer {
 
         // Create surface
         let surface = instance
-            .create_surface(window.raw_window())
+            .create_surface(window)
             .map_err(|e| format!("Failed to create surface: {}", e))?;
 
         // Get adapter
