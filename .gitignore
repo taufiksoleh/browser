@@ -1,0 +1,25 @@
+# Build artifacts
+/target/
+debug/
+release/
+
+# Cargo lock file (optional for libraries, keep for binaries)
+# Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
