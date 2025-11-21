@@ -5,6 +5,8 @@
 #include <string>
 #include "include/cef_browser.h"
 
+class BrowserClient;
+
 // Browser window manager - creates and manages the main browser window
 class BrowserWindow {
 public:
@@ -25,6 +27,9 @@ public:
 
     // Stop loading
     static void StopLoading();
+
+    // Get the browser client
+    static CefRefPtr<BrowserClient> GetClient();
 
     // Get the main browser instance
     static CefRefPtr<CefBrowser> GetBrowser();

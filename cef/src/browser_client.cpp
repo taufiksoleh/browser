@@ -8,16 +8,17 @@
 #include "include/cef_app.h"
 #include "include/cef_parser.h"
 #include "include/wrapper/cef_helpers.h"
+#include "include/wrapper/cef_closure_task.h"
 
 int BrowserClient::browser_count_ = 0;
 
-// Custom context menu IDs
-enum ContextMenuId {
-    MENU_ID_VIEW_SOURCE = MENU_ID_USER_FIRST,
-    MENU_ID_OPEN_DEVTOOLS,
-    MENU_ID_CLOSE_DEVTOOLS,
-    MENU_ID_RELOAD_PAGE,
-    MENU_ID_COPY_URL,
+// Custom context menu IDs (start after MENU_ID_USER_FIRST to avoid conflicts)
+enum CustomMenuId {
+    CLIENT_MENU_VIEW_SOURCE = MENU_ID_USER_FIRST + 100,
+    CLIENT_MENU_OPEN_DEVTOOLS,
+    CLIENT_MENU_CLOSE_DEVTOOLS,
+    CLIENT_MENU_RELOAD_PAGE,
+    CLIENT_MENU_COPY_URL,
 };
 
 BrowserClient::BrowserClient() : is_closing_(false) {}
@@ -274,11 +275,11 @@ void BrowserClient::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
     }
 
     // Add custom menu items
-    model->AddItem(MENU_ID_RELOAD_PAGE, "Reload");
-    model->AddItem(MENU_ID_VIEW_SOURCE, "View Page Source");
+    model->AddItem(CLIENT_MENU_RELOAD_PAGE, "Reload");
+    model->AddItem(CLIENT_MENU_VIEW_SOURCE, "View Page Source");
     model->AddSeparator();
-    model->AddItem(MENU_ID_OPEN_DEVTOOLS, "Inspect Element");
-    model->AddItem(MENU_ID_COPY_URL, "Copy URL");
+    model->AddItem(CLIENT_MENU_OPEN_DEVTOOLS, "Inspect Element");
+    model->AddItem(CLIENT_MENU_COPY_URL, "Copy URL");
 }
 
 bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
@@ -289,11 +290,11 @@ bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
     CEF_REQUIRE_UI_THREAD();
 
     switch (command_id) {
-        case MENU_ID_VIEW_SOURCE:
+        case CLIENT_MENU_VIEW_SOURCE:
             browser->GetMainFrame()->ViewSource();
             return true;
 
-        case MENU_ID_OPEN_DEVTOOLS: {
+        case CLIENT_MENU_OPEN_DEVTOOLS: {
             CefWindowInfo windowInfo;
             CefBrowserSettings settings;
 #if defined(OS_WIN)
@@ -304,15 +305,15 @@ bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
             return true;
         }
 
-        case MENU_ID_CLOSE_DEVTOOLS:
+        case CLIENT_MENU_CLOSE_DEVTOOLS:
             browser->GetHost()->CloseDevTools();
             return true;
 
-        case MENU_ID_RELOAD_PAGE:
+        case CLIENT_MENU_RELOAD_PAGE:
             browser->Reload();
             return true;
 
-        case MENU_ID_COPY_URL:
+        case CLIENT_MENU_COPY_URL:
             // Copy URL to clipboard
             frame->Copy();
             return true;
@@ -441,13 +442,6 @@ void BrowserClient::OnDownloadUpdated(
 // ============================================================================
 
 void BrowserClient::CloseAllBrowsers(bool force_close) {
-    if (!CefCurrentlyOn(TID_UI)) {
-        CefPostTask(TID_UI,
-                    base::BindOnce(&BrowserClient::CloseAllBrowsers, this,
-                                   force_close));
-        return;
-    }
-
     if (browser_list_.empty()) {
         return;
     }

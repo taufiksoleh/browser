@@ -54,9 +54,6 @@ int RunMain(int argc, char* argv[]) {
     // Set cache path
     CefString(&settings.cache_path).FromASCII("./cache");
 
-    // Set user data path
-    CefString(&settings.user_data_path).FromASCII("./user_data");
-
     // Set log file
     CefString(&settings.log_file).FromASCII("./cef_debug.log");
     settings.log_severity = LOGSEVERITY_INFO;

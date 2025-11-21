@@ -1,6 +1,5 @@
 // CEF Browser - Application Handler Implementation
 #include "app.h"
-#include "browser_client.h"
 
 #include "include/cef_browser.h"
 #include "include/cef_command_line.h"
@@ -48,8 +47,8 @@ void BrowserApp::OnContextInitialized() {
 }
 
 CefRefPtr<CefClient> BrowserApp::GetDefaultClient() {
-    // Return default client for popup windows
-    return new BrowserClient();
+    // Return nullptr - browser client is created in BrowserWindow::Create()
+    return nullptr;
 }
 
 void BrowserApp::OnWebKitInitialized() {

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(cef_browser VERSION 1.0.0 LANGUAGES CXX)
+project(cef_browser VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -50,7 +50,7 @@ if(NOT EXISTS "${CEF_ROOT}")
         COMMAND ${CMAKE_COMMAND} -E tar xjf "${CMAKE_CURRENT_BINARY_DIR}/cef.tar.bz2"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     )
-    file(RENAME "${CMAKE_CURRENT_BINARY_DIR}/${CEF_DISTRIBUTION}" "${CEF_ROOT}")
+    file(RENAME "${CMAKE_CURRENT_BINARY_DIR}/${CEF_DISTRIBUTION}_minimal" "${CEF_ROOT}")
 endif()
 
 # Include CEF cmake modules
@@ -81,9 +81,23 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+# Link CEF library and platform-specific libraries
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(CEF_LIB "${CEF_ROOT}/Release/libcef.so")
+    find_package(X11 REQUIRED)
+    set(PLATFORM_LIBS ${X11_LIBRARIES} pthread dl)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(CEF_LIB "${CEF_ROOT}/Release/Chromium Embedded Framework.framework/Chromium Embedded Framework")
+    set(PLATFORM_LIBS "")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(CEF_LIB "${CEF_ROOT}/Release/libcef.lib")
+    set(PLATFORM_LIBS "")
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     libcef_dll_wrapper
-    ${CEF_STANDARD_LIBS}
+    ${CEF_LIB}
+    ${PLATFORM_LIBS}
 )
 
 # Copy CEF resources and binaries
@@ -148,7 +162,7 @@ target_include_directories(${PROJECT_NAME}_helper PRIVATE
 
 target_link_libraries(${PROJECT_NAME}_helper PRIVATE
     libcef_dll_wrapper
-    ${CEF_STANDARD_LIBS}
+    ${CEF_LIB}
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
