@@ -4,8 +4,7 @@
 //! Parse → Style → Layout → Paint → Composite
 
 use crate::browser::{BrowserError, Result, Tab};
-use crate::render::Renderer;
-use crate::ui::Window;
+use crate::ui::{Window, WindowConfig};
 use log::info;
 use parking_lot::RwLock;
 use std::sync::Arc;
@@ -39,17 +38,20 @@ impl Browser {
 
         let browser = Arc::new(RwLock::new(Self::new()));
 
-        // Create window and renderer
-        let (window, event_loop) = Window::create("Browser", 1280, 720)
-            .map_err(|e| BrowserError::Window(e.to_string()))?;
+        // Create event loop (window and renderer are created in the resumed callback)
+        let event_loop =
+            Window::create_event_loop().map_err(|e| BrowserError::Window(e.to_string()))?;
 
-        let renderer = Renderer::new(&window).map_err(|e| BrowserError::Gpu(e.to_string()))?;
+        let config = WindowConfig {
+            title: "Browser".to_string(),
+            width: 1280,
+            height: 720,
+        };
 
-        info!("Browser engine initialized successfully");
+        info!("Browser engine initialized, starting event loop...");
 
         // Run the event loop
-        Window::run(event_loop, window, browser, renderer)
-            .map_err(|e| BrowserError::Window(e.to_string()))
+        Window::run(event_loop, browser, config).map_err(|e| BrowserError::Window(e.to_string()))
     }
 
     /// Create a new tab

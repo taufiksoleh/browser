@@ -12,4 +12,4 @@ mod window;
 
 pub use events::BrowserEvent;
 pub use input::InputState;
-pub use window::Window;
+pub use window::{Window, WindowConfig};
