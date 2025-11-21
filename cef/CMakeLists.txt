@@ -169,6 +169,50 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
 )
 
+# ============================================================================
+# Testing Support
+# ============================================================================
+option(BUILD_TESTS "Build unit tests" OFF)
+
+if(BUILD_TESTS)
+    enable_testing()
+
+    # Find Google Test
+    find_package(GTest QUIET)
+
+    if(GTest_FOUND)
+        message(STATUS "Google Test found - building tests")
+
+        # Unit tests executable
+        add_executable(${PROJECT_NAME}_tests
+            tests/test_resource_util.cpp
+        )
+
+        target_include_directories(${PROJECT_NAME}_tests PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${GTEST_INCLUDE_DIRS}
+        )
+
+        target_link_libraries(${PROJECT_NAME}_tests PRIVATE
+            GTest::gtest
+            GTest::gtest_main
+        )
+
+        # Add test to CTest
+        add_test(NAME UnitTests COMMAND ${PROJECT_NAME}_tests)
+
+        # Set test properties
+        set_tests_properties(UnitTests PROPERTIES
+            TIMEOUT 60
+            LABELS "unit"
+        )
+    else()
+        message(STATUS "Google Test not found - skipping unit tests")
+        message(STATUS "  Install with: sudo apt-get install libgtest-dev")
+    endif()
+endif()
+
 message(STATUS "CEF Browser configuration complete")
 message(STATUS "  Platform: ${CEF_PLATFORM}")
 message(STATUS "  CEF Version: ${CEF_VERSION}")
+message(STATUS "  Build Tests: ${BUILD_TESTS}")
