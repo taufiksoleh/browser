@@ -1,7 +1,7 @@
 //! HTTP Client
 
-use crate::network::{NetworkError, Cache, cache::CacheEntry};
-use reqwest::{Client, header};
+use crate::network::{cache::CacheEntry, Cache, NetworkError};
+use reqwest::{header, Client};
 use std::time::{Duration, Instant};
 use url::Url;
 

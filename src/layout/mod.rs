@@ -6,10 +6,10 @@
 //! - Flex layout (basic)
 //! - Position calculations
 
-mod tree;
-mod box_model;
 mod block;
+pub mod box_model;
 mod inline;
+mod tree;
 
-pub use tree::{LayoutTree, LayoutNode, LayoutId};
-pub use box_model::{BoxModel, Dimensions, Rect, EdgeSizes};
+pub use box_model::{BoxModel, Dimensions, EdgeSizes, Rect};
+pub use tree::{LayoutId, LayoutNode, LayoutTree};

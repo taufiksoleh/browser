@@ -3,11 +3,10 @@
 //! Provides standards-compliant HTML parsing that handles
 //! malformed HTML gracefully (like real browsers).
 
-use crate::dom::{Document, NodeId, NodeData, Attributes};
+use crate::dom::{Document, NodeId};
 use html5ever::parse_document;
 use html5ever::tendril::TendrilSink;
 use markup5ever_rcdom::{Handle, NodeData as RcNodeData, RcDom};
-use std::collections::HashMap;
 
 /// Parse HTML string into a Document
 pub fn parse_html(html: &str) -> Document {
@@ -19,31 +18,26 @@ pub fn parse_html(html: &str) -> Document {
 
     // Convert to our Document structure
     let mut document = Document::new();
-    let mut node_map: HashMap<usize, NodeId> = HashMap::new();
+    let root = document.root();
 
     // Process the tree
-    convert_node(&dom.document, &mut document, document.root(), &mut node_map);
+    convert_node(&dom.document, &mut document, root);
 
     document
 }
 
 /// Convert html5ever node tree to our Document structure
-fn convert_node(
-    handle: &Handle,
-    document: &mut Document,
-    parent_id: NodeId,
-    node_map: &mut HashMap<usize, NodeId>,
-) {
+fn convert_node(handle: &Handle, document: &mut Document, parent_id: NodeId) {
     let node = handle;
 
     match &node.data {
         RcNodeData::Document => {
             // Process children of document
             for child in node.children.borrow().iter() {
-                convert_node(child, document, parent_id, node_map);
+                convert_node(child, document, parent_id);
             }
         }
-        RcNodeData::Doctype { name, .. } => {
+        RcNodeData::Doctype { .. } => {
             // Skip doctype for now, it's not critical for rendering
         }
         RcNodeData::Text { contents } => {
@@ -55,36 +49,37 @@ fn convert_node(
             }
         }
         RcNodeData::Comment { contents } => {
-            let comment_id = document.create_comment(&contents.borrow());
+            let content = contents.to_string();
+            let comment_id = document.create_comment(&content);
             document.append_child(parent_id, comment_id);
         }
         RcNodeData::Element { name, attrs, .. } => {
             let tag_name = name.local.to_string();
-            let namespace = match name.ns {
-                html5ever::ns!(html) => None,
-                ref ns => Some(ns.to_string()),
+            let namespace = if name.ns == html5ever::namespace_url!("http://www.w3.org/1999/xhtml")
+            {
+                None
+            } else {
+                Some(name.ns.to_string())
             };
 
             // Create element
             let element_id = document.create_element(&tag_name, namespace);
 
             // Set attributes
-            if let Some(node) = document.get_node_mut(element_id) {
-                if let Some(node_attrs) = node.attributes_mut() {
-                    for attr in attrs.borrow().iter() {
-                        node_attrs.set(
-                            attr.name.local.to_string(),
-                            attr.value.to_string(),
-                        );
-                    }
-                }
+            let attrs_borrowed = attrs.borrow();
+            for attr in attrs_borrowed.iter() {
+                document.set_attribute(
+                    element_id,
+                    attr.name.local.to_string(),
+                    attr.value.to_string(),
+                );
             }
 
             document.append_child(parent_id, element_id);
 
             // Process children
             for child in node.children.borrow().iter() {
-                convert_node(child, document, element_id, node_map);
+                convert_node(child, document, element_id);
             }
         }
         RcNodeData::ProcessingInstruction { .. } => {

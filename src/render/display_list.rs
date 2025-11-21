@@ -7,10 +7,7 @@ use crate::layout::Rect;
 #[derive(Debug, Clone)]
 pub enum DisplayCommand {
     /// Fill a rectangle with solid color
-    SolidRect {
-        rect: Rect,
-        color: Color,
-    },
+    SolidRect { rect: Rect, color: Color },
     /// Draw text
     Text {
         text: String,
@@ -26,10 +23,7 @@ pub enum DisplayCommand {
         colors: (Color, Color, Color, Color),
     },
     /// Draw image
-    Image {
-        rect: Rect,
-        image_id: u32,
-    },
+    Image { rect: Rect, image_id: u32 },
     /// Push clip rectangle
     PushClip(Rect),
     /// Pop clip rectangle
@@ -78,9 +72,23 @@ impl DisplayList {
     }
 
     /// Add text
-    pub fn push_text(&mut self, text: String, x: f32, y: f32, color: Color, font_size: f32, z_index: i32) {
+    pub fn push_text(
+        &mut self,
+        text: String,
+        x: f32,
+        y: f32,
+        color: Color,
+        font_size: f32,
+        z_index: i32,
+    ) {
         self.push(DisplayItem::new(
-            DisplayCommand::Text { text, x, y, color, font_size },
+            DisplayCommand::Text {
+                text,
+                x,
+                y,
+                color,
+                font_size,
+            },
             z_index,
         ));
     }
@@ -94,7 +102,11 @@ impl DisplayList {
         z_index: i32,
     ) {
         self.push(DisplayItem::new(
-            DisplayCommand::Border { rect, widths, colors },
+            DisplayCommand::Border {
+                rect,
+                widths,
+                colors,
+            },
             z_index,
         ));
     }

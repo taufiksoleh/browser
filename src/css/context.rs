@@ -1,6 +1,8 @@
 //! Style Context - Manages stylesheets and applies styles to DOM
 
-use crate::css::{parse_stylesheet, StyleRule, Selector, Specificity, ComputedStyle, StyleProperty, PropertyId};
+use crate::css::{
+    parse_stylesheet, ComputedStyle, PropertyId, Specificity, StyleProperty, StyleRule,
+};
 use crate::dom::{Document, NodeId};
 use fnv::FnvHashMap;
 
@@ -136,7 +138,8 @@ impl StyleContext {
                 }
 
                 // Apply defaults based on element type
-                let is_block = node.tag_name()
+                let is_block = node
+                    .tag_name()
                     .map(|t| is_block_element(t))
                     .unwrap_or(false);
                 style.apply_defaults(is_block);
@@ -212,9 +215,34 @@ impl Default for StyleContext {
 fn is_block_element(tag: &str) -> bool {
     matches!(
         tag,
-        "html" | "body" | "div" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
-            | "ul" | "ol" | "li" | "table" | "tr" | "form" | "fieldset"
-            | "article" | "aside" | "footer" | "header" | "nav" | "section" | "main"
-            | "blockquote" | "pre" | "figure" | "figcaption" | "hr"
+        "html"
+            | "body"
+            | "div"
+            | "p"
+            | "h1"
+            | "h2"
+            | "h3"
+            | "h4"
+            | "h5"
+            | "h6"
+            | "ul"
+            | "ol"
+            | "li"
+            | "table"
+            | "tr"
+            | "form"
+            | "fieldset"
+            | "article"
+            | "aside"
+            | "footer"
+            | "header"
+            | "nav"
+            | "section"
+            | "main"
+            | "blockquote"
+            | "pre"
+            | "figure"
+            | "figcaption"
+            | "hr"
     )
 }

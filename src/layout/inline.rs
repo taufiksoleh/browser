@@ -2,7 +2,7 @@
 //!
 //! Implements CSS inline formatting context for text and inline elements.
 
-use crate::layout::{LayoutTree, LayoutId, Rect};
+use crate::layout::{LayoutId, Rect};
 
 /// Line box for inline layout
 #[derive(Debug, Clone)]

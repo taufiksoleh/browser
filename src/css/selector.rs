@@ -8,7 +8,7 @@
 //! - Combinators (descendant, child, adjacent)
 //! - Pseudo-classes (:hover, :first-child, etc.)
 
-use crate::dom::{Document, NodeId, Node, Attributes};
+use crate::dom::{Document, Node, NodeId};
 
 /// CSS Specificity (a, b, c, d) where:
 /// a = inline styles (always 0 for stylesheets)
@@ -256,7 +256,11 @@ impl Selector {
             } else {
                 (n, AttributeOp::Exact)
             };
-            (n.to_string(), Some(op), Some(v.trim_matches('"').trim_matches('\'').to_string()))
+            (
+                n.to_string(),
+                Some(op),
+                Some(v.trim_matches('"').trim_matches('\'').to_string()),
+            )
         } else {
             return None;
         };
@@ -273,9 +277,9 @@ impl Selector {
             for part in part_list {
                 match part {
                     SelectorPart::Id(_) => ids += 1,
-                    SelectorPart::Class(_) | SelectorPart::Attribute { .. } | SelectorPart::PseudoClass(_) => {
-                        classes += 1
-                    }
+                    SelectorPart::Class(_)
+                    | SelectorPart::Attribute { .. }
+                    | SelectorPart::PseudoClass(_) => classes += 1,
                     SelectorPart::Type(_) | SelectorPart::PseudoElement(_) => types += 1,
                     SelectorPart::Universal => {}
                 }

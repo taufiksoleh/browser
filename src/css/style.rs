@@ -1,6 +1,6 @@
 //! Style rules and computed styles
 
-use crate::css::{Selector, Specificity, PropertyId, Color, Length, Display};
+use crate::css::{Color, Display, Length, PropertyId, Selector, Specificity};
 use fnv::FnvHashMap;
 
 /// A CSS style rule
@@ -125,20 +125,36 @@ impl ComputedStyle {
     /// Get margin values (top, right, bottom, left)
     pub fn margin(&self) -> (Length, Length, Length, Length) {
         (
-            self.get(PropertyId::MarginTop).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::MarginRight).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::MarginBottom).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::MarginLeft).and_then(Length::parse).unwrap_or(Length::Zero),
+            self.get(PropertyId::MarginTop)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::MarginRight)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::MarginBottom)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::MarginLeft)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
         )
     }
 
     /// Get padding values (top, right, bottom, left)
     pub fn padding(&self) -> (Length, Length, Length, Length) {
         (
-            self.get(PropertyId::PaddingTop).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::PaddingRight).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::PaddingBottom).and_then(Length::parse).unwrap_or(Length::Zero),
-            self.get(PropertyId::PaddingLeft).and_then(Length::parse).unwrap_or(Length::Zero),
+            self.get(PropertyId::PaddingTop)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::PaddingRight)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::PaddingBottom)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
+            self.get(PropertyId::PaddingLeft)
+                .and_then(Length::parse)
+                .unwrap_or(Length::Zero),
         )
     }
 

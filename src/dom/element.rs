@@ -1,6 +1,6 @@
 //! Element-specific functionality
 
-use crate::dom::{Attributes, NodeId};
+use crate::dom::Attributes;
 
 /// Element data with common operations
 #[derive(Debug, Clone)]
@@ -24,7 +24,11 @@ impl Element {
     }
 
     /// Create element with attributes
-    pub fn with_attributes(tag_name: String, namespace: Option<String>, attributes: Attributes) -> Self {
+    pub fn with_attributes(
+        tag_name: String,
+        namespace: Option<String>,
+        attributes: Attributes,
+    ) -> Self {
         Self {
             tag_name: tag_name.to_lowercase(),
             namespace,
@@ -36,8 +40,20 @@ impl Element {
     pub fn is_void_element(&self) -> bool {
         matches!(
             self.tag_name.as_str(),
-            "area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input"
-            | "link" | "meta" | "param" | "source" | "track" | "wbr"
+            "area"
+                | "base"
+                | "br"
+                | "col"
+                | "embed"
+                | "hr"
+                | "img"
+                | "input"
+                | "link"
+                | "meta"
+                | "param"
+                | "source"
+                | "track"
+                | "wbr"
         )
     }
 
@@ -45,10 +61,32 @@ impl Element {
     pub fn creates_block_context(&self) -> bool {
         matches!(
             self.tag_name.as_str(),
-            "html" | "body" | "article" | "section" | "nav" | "aside"
-            | "header" | "footer" | "main" | "div" | "p" | "h1" | "h2"
-            | "h3" | "h4" | "h5" | "h6" | "ul" | "ol" | "li" | "table"
-            | "form" | "fieldset" | "blockquote" | "pre" | "figure"
+            "html"
+                | "body"
+                | "article"
+                | "section"
+                | "nav"
+                | "aside"
+                | "header"
+                | "footer"
+                | "main"
+                | "div"
+                | "p"
+                | "h1"
+                | "h2"
+                | "h3"
+                | "h4"
+                | "h5"
+                | "h6"
+                | "ul"
+                | "ol"
+                | "li"
+                | "table"
+                | "form"
+                | "fieldset"
+                | "blockquote"
+                | "pre"
+                | "figure"
         )
     }
 
@@ -56,9 +94,27 @@ impl Element {
     pub fn is_inline(&self) -> bool {
         matches!(
             self.tag_name.as_str(),
-            "a" | "abbr" | "b" | "bdo" | "br" | "cite" | "code" | "dfn"
-            | "em" | "i" | "img" | "kbd" | "label" | "q" | "samp" | "small"
-            | "span" | "strong" | "sub" | "sup" | "time" | "var"
+            "a" | "abbr"
+                | "b"
+                | "bdo"
+                | "br"
+                | "cite"
+                | "code"
+                | "dfn"
+                | "em"
+                | "i"
+                | "img"
+                | "kbd"
+                | "label"
+                | "q"
+                | "samp"
+                | "small"
+                | "span"
+                | "strong"
+                | "sub"
+                | "sup"
+                | "time"
+                | "var"
         )
     }
 }
@@ -68,11 +124,7 @@ pub struct ElementQuery;
 
 impl ElementQuery {
     /// Check if element matches a simple selector
-    pub fn matches_selector(
-        tag_name: &str,
-        attributes: &Attributes,
-        selector: &str,
-    ) -> bool {
+    pub fn matches_selector(tag_name: &str, attributes: &Attributes, selector: &str) -> bool {
         let selector = selector.trim();
 
         // ID selector: #id

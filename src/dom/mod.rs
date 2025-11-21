@@ -6,14 +6,13 @@
 //! - DOM tree traversal and manipulation
 //! - Efficient memory layout using arena allocation
 
-mod node;
-mod document;
-mod parser;
-mod element;
 mod attributes;
+mod document;
+mod element;
+mod node;
+mod parser;
 
-pub use node::{Node, NodeId, NodeType, NodeData};
-pub use document::Document;
-pub use parser::parse_html;
-pub use element::Element;
 pub use attributes::Attributes;
+pub use document::Document;
+pub use node::{Node, NodeData, NodeId, NodeType};
+pub use parser::parse_html;

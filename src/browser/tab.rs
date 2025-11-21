@@ -6,8 +6,8 @@
 //! - Layout tree
 //! - Render state
 
-use crate::dom::Document;
 use crate::css::StyleContext;
+use crate::dom::Document;
 use crate::layout::LayoutTree;
 use crate::network::NetworkClient;
 use url::Url;
@@ -68,7 +68,9 @@ impl Tab {
         let document = crate::dom::parse_html(&response.body);
 
         // Extract title
-        self.title = document.get_title().unwrap_or_else(|| parsed_url.host_str().unwrap_or("").to_string());
+        self.title = document
+            .get_title()
+            .unwrap_or_else(|| parsed_url.host_str().unwrap_or("").to_string());
 
         self.document = Some(document);
         self.loading = false;

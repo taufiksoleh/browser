@@ -1,10 +1,9 @@
 //! Painter - Generates display list from layout tree
 
-use crate::css::{Color, StyleContext, Display};
+use crate::css::{Color, StyleContext};
 use crate::dom::Document;
-use crate::layout::{LayoutTree, LayoutId, LayoutNode, Rect};
-use crate::layout::box_model::BoxType;
-use crate::render::{DisplayList, DisplayCommand, DisplayItem};
+use crate::layout::{LayoutId, LayoutNode, LayoutTree, Rect};
+use crate::render::{DisplayCommand, DisplayList};
 
 /// Painter generates display list from layout
 pub struct Painter<'a> {
@@ -61,7 +60,8 @@ impl<'a> Painter<'a> {
         // Paint background
         if bg_color.a > 0 {
             let bg_rect = dims.padding_box();
-            self.display_list.push_rect(bg_rect, bg_color, self.current_z);
+            self.display_list
+                .push_rect(bg_rect, bg_color, self.current_z);
         }
 
         // Paint borders

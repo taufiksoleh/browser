@@ -5,11 +5,10 @@
 //! - Tiled rasterization
 //! - Hardware compositing
 
-mod renderer;
 mod display_list;
-mod paint;
 mod gpu;
+mod paint;
+mod renderer;
 
+pub use display_list::{DisplayCommand, DisplayItem, DisplayList};
 pub use renderer::Renderer;
-pub use display_list::{DisplayList, DisplayItem, DisplayCommand};
-pub use paint::Painter;

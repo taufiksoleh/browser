@@ -19,7 +19,12 @@ impl Color {
     }
 
     pub const fn transparent() -> Self {
-        Self { r: 0, g: 0, b: 0, a: 0 }
+        Self {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
+        }
     }
 
     pub const BLACK: Color = Color::rgb(0, 0, 0);
@@ -91,8 +96,8 @@ pub enum Length {
 impl Length {
     /// Convert to pixels given context
     pub fn to_px(&self, parent_font_size: f32, root_font_size: f32, viewport: (f32, f32)) -> f32 {
-        match self {
-            Length::Px(v) => *v,
+        match *self {
+            Length::Px(v) => v,
             Length::Em(v) => v * parent_font_size,
             Length::Rem(v) => v * root_font_size,
             Length::Percent(v) => v, // Percentage handled by layout

@@ -6,11 +6,11 @@
 //! - GPU Process: Hardware-accelerated compositing
 
 mod browser;
-mod dom;
 mod css;
+mod dom;
 mod layout;
-mod render;
 mod network;
+mod render;
 mod ui;
 
 use browser::Browser;

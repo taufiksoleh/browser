@@ -2,8 +2,7 @@
 //!
 //! Implements CSS block formatting context.
 
-use crate::layout::{LayoutTree, LayoutId, Dimensions, EdgeSizes};
-use crate::layout::box_model::BoxType;
+use crate::layout::{Dimensions, LayoutId, LayoutTree};
 
 /// Block layout context
 pub struct BlockContext<'a> {
@@ -64,20 +63,17 @@ impl<'a> BlockContext<'a> {
 
         if let Some(node) = self.tree.get_node_mut(id) {
             let dims = &mut node.box_model.dimensions;
-            dims.content.x = container_x
-                + dims.margin.left
-                + dims.border.left
-                + dims.padding.left;
+            dims.content.x = container_x + dims.margin.left + dims.border.left + dims.padding.left;
         }
     }
 
     /// Layout child elements
-    fn layout_children(&mut self, id: LayoutId) {
+    fn layout_children(&mut self, _id: LayoutId) {
         // Implementation deferred to LayoutTree
     }
 
     /// Calculate block height based on content
-    fn calculate_height(&mut self, id: LayoutId) {
+    fn calculate_height(&mut self, _id: LayoutId) {
         // Height is already calculated in layout_block_children
     }
 }

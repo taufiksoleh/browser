@@ -2,10 +2,10 @@
 //!
 //! Parallel structure to the DOM tree containing layout information.
 
+use crate::css::{ComputedStyle, Display, Length, StyleContext};
 use crate::dom::{Document, NodeId, NodeType};
-use crate::css::{StyleContext, Display, Length, ComputedStyle};
-use crate::layout::{BoxModel, Dimensions, EdgeSizes, Rect};
 use crate::layout::box_model::BoxType;
+use crate::layout::{BoxModel, Dimensions, EdgeSizes};
 use smallvec::SmallVec;
 
 /// Layout node identifier
@@ -108,7 +108,7 @@ impl LayoutTree {
     }
 
     /// Get a node mutably
-    fn get_node_mut(&mut self, id: LayoutId) -> Option<&mut LayoutNode> {
+    pub fn get_node_mut(&mut self, id: LayoutId) -> Option<&mut LayoutNode> {
         self.nodes.get_mut(id.0)
     }
 
@@ -254,7 +254,8 @@ impl LayoutTree {
 
     /// Calculate block width
     fn calculate_block_width(&mut self, id: LayoutId) {
-        let parent_width = self.get_node(id)
+        let parent_width = self
+            .get_node(id)
             .and_then(|n| n.parent)
             .and_then(|p| self.get_node(p))
             .map(|p| p.box_model.dimensions.content.width)
@@ -291,12 +292,14 @@ impl LayoutTree {
         let mut cursor_y = start_y;
 
         // Get children IDs
-        let children: Vec<_> = self.get_node(id)
+        let children: Vec<_> = self
+            .get_node(id)
             .map(|n| n.children.iter().copied().collect())
             .unwrap_or_default();
 
         for child_id in children {
-            let child_type = self.get_node(child_id)
+            let child_type = self
+                .get_node(child_id)
                 .map(|n| n.box_model.box_type)
                 .unwrap_or(BoxType::Block);
 
@@ -338,7 +341,8 @@ impl LayoutTree {
     /// Calculate block height
     fn calculate_block_height(&mut self, id: LayoutId) {
         // Get children bounds
-        let children: Vec<_> = self.get_node(id)
+        let children: Vec<_> = self
+            .get_node(id)
             .map(|n| n.children.iter().copied().collect())
             .unwrap_or_default();
 

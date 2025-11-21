@@ -6,10 +6,10 @@
 //! - Cache management
 //! - Connection pooling
 
-mod client;
 mod cache;
+mod client;
 mod error;
 
-pub use client::{NetworkClient, Response};
 pub use cache::Cache;
+pub use client::NetworkClient;
 pub use error::NetworkError;

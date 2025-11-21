@@ -2,8 +2,10 @@
 
 use crate::browser::Browser;
 use crate::render::Renderer;
-use crate::ui::{InputState, BrowserEvent};
 use crate::ui::input::MouseButton;
+use crate::ui::{BrowserEvent, InputState};
+use parking_lot::RwLock;
+use std::sync::Arc;
 use winit::{
     application::ApplicationHandler,
     dpi::{LogicalSize, PhysicalSize},
@@ -11,8 +13,6 @@ use winit::{
     event_loop::{ActiveEventLoop, ControlFlow, EventLoop},
     window::{WindowAttributes, WindowId},
 };
-use std::sync::Arc;
-use parking_lot::RwLock;
 
 /// Browser window wrapper
 pub struct Window {
@@ -21,15 +21,20 @@ pub struct Window {
 
 impl Window {
     /// Create a new window
-    pub fn create(title: &str, width: u32, height: u32) -> Result<(Self, EventLoop<()>), String> {
-        let event_loop = EventLoop::new().map_err(|e| format!("Failed to create event loop: {}", e))?;
+    pub fn create(
+        _title: &str,
+        _width: u32,
+        _height: u32,
+    ) -> Result<(Self, EventLoop<()>), String> {
+        let event_loop =
+            EventLoop::new().map_err(|e| format!("Failed to create event loop: {}", e))?;
         event_loop.set_control_flow(ControlFlow::Wait);
 
         // Window will be created in the event handler
         let window = Self {
             inner: Arc::new(
                 // Placeholder - actual window created in resume
-                unsafe { std::mem::zeroed() }
+                unsafe { std::mem::zeroed() },
             ),
         };
 
@@ -163,7 +168,8 @@ impl ApplicationHandler for BrowserApp {
                 self.render();
             }
             WindowEvent::CursorMoved { position, .. } => {
-                self.input.set_mouse_position(position.x as f32, position.y as f32);
+                self.input
+                    .set_mouse_position(position.x as f32, position.y as f32);
             }
             WindowEvent::MouseInput { state, button, .. } => {
                 let pressed = state == ElementState::Pressed;

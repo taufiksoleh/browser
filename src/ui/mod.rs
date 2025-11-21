@@ -6,10 +6,10 @@
 //! - Input processing
 //! - UI components (address bar, tabs, etc.)
 
-mod window;
-mod input;
 mod events;
+mod input;
+mod window;
 
-pub use window::Window;
-pub use input::InputState;
 pub use events::BrowserEvent;
+pub use input::InputState;
+pub use window::Window;

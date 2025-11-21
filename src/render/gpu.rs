@@ -1,6 +1,5 @@
 //! GPU Resources and Utilities
 
-use wgpu::{Device, Queue, Surface, SurfaceConfiguration};
 use crate::css::Color;
 
 /// Vertex for GPU rendering

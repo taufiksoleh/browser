@@ -3,8 +3,7 @@
 //! Uses arena allocation for efficient memory layout and
 //! O(1) node access by ID.
 
-use crate::dom::{Node, NodeId, NodeData, Attributes};
-use smallvec::SmallVec;
+use crate::dom::{Attributes, Node, NodeData, NodeId};
 
 /// The DOM Document
 #[derive(Debug)]
@@ -106,6 +105,15 @@ impl Document {
         );
         self.nodes.push(node);
         id
+    }
+
+    /// Set an attribute on an element
+    pub fn set_attribute(&mut self, node_id: NodeId, name: String, value: String) {
+        if let Some(node) = self.nodes.get_mut(node_id.index()) {
+            if let Some(attrs) = node.attributes_mut() {
+                attrs.set(name, value);
+            }
+        }
     }
 
     /// Append a child node to a parent

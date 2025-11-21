@@ -3,12 +3,12 @@
 //! Coordinates the rendering pipeline:
 //! Parse → Style → Layout → Paint → Composite
 
-use crate::browser::{Tab, Result, BrowserError};
-use crate::ui::Window;
+use crate::browser::{BrowserError, Result, Tab};
 use crate::render::Renderer;
+use crate::ui::Window;
 use log::info;
-use std::sync::Arc;
 use parking_lot::RwLock;
+use std::sync::Arc;
 
 /// Main browser instance
 pub struct Browser {
@@ -43,8 +43,7 @@ impl Browser {
         let (window, event_loop) = Window::create("Browser", 1280, 720)
             .map_err(|e| BrowserError::Window(e.to_string()))?;
 
-        let renderer = Renderer::new(&window)
-            .map_err(|e| BrowserError::Gpu(e.to_string()))?;
+        let renderer = Renderer::new(&window).map_err(|e| BrowserError::Gpu(e.to_string()))?;
 
         info!("Browser engine initialized successfully");
 

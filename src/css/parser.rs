@@ -2,7 +2,7 @@
 //!
 //! Parses CSS stylesheets into structured rules.
 
-use crate::css::{Selector, StyleRule, StyleDeclaration, PropertyId};
+use crate::css::{PropertyId, Selector, StyleDeclaration, StyleRule};
 
 /// Parse a CSS stylesheet string
 pub fn parse_stylesheet(css: &str) -> Vec<StyleRule> {
@@ -158,7 +158,8 @@ fn expand_shorthand(property: PropertyId, value: &str) -> Vec<(PropertyId, Strin
         }
         PropertyId::Background => {
             // Simple handling - treat as background-color if it looks like a color
-            if value.starts_with('#') || value.starts_with("rgb") || Color::from_name_exists(value) {
+            if value.starts_with('#') || value.starts_with("rgb") || Color::from_name_exists(value)
+            {
                 vec![(PropertyId::BackgroundColor, value.to_string())]
             } else {
                 vec![(property, value.to_string())]
@@ -175,8 +176,18 @@ impl Color {
     pub fn from_name_exists(name: &str) -> bool {
         matches!(
             name.to_lowercase().as_str(),
-            "black" | "white" | "red" | "green" | "blue" | "transparent"
-                | "yellow" | "orange" | "purple" | "pink" | "gray" | "grey"
+            "black"
+                | "white"
+                | "red"
+                | "green"
+                | "blue"
+                | "transparent"
+                | "yellow"
+                | "orange"
+                | "purple"
+                | "pink"
+                | "gray"
+                | "grey"
         )
     }
 }

@@ -1,11 +1,9 @@
 //! Main Renderer using wgpu
 
-use crate::render::gpu::{Vertex, Uniforms, SHADER_SOURCE, create_rect_vertices};
-use crate::render::{DisplayList, DisplayCommand};
-use crate::css::Color;
+use crate::render::gpu::{create_rect_vertices, Uniforms, Vertex, SHADER_SOURCE};
+use crate::render::{DisplayCommand, DisplayList};
 use crate::ui::Window;
 use wgpu::util::DeviceExt;
-use std::sync::Arc;
 
 /// GPU Renderer
 pub struct Renderer {
@@ -29,7 +27,7 @@ impl Renderer {
         let size = window.inner_size();
 
         // Create wgpu instance
-        let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends: wgpu::Backends::all(),
             ..Default::default()
         });
@@ -191,7 +189,8 @@ impl Renderer {
 
             // Update uniforms
             let uniforms = Uniforms::new(new_size.0 as f32, new_size.1 as f32);
-            self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[uniforms]));
+            self.queue
+                .write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[uniforms]));
         }
     }
 
@@ -206,25 +205,31 @@ impl Renderer {
             .texture
             .create_view(&wgpu::TextureViewDescriptor::default());
 
-        let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-            label: Some("Render Encoder"),
-        });
+        let mut encoder = self
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("Render Encoder"),
+            });
 
         // Collect all vertices and indices
         let (vertices, indices) = self.build_geometry(display_list);
 
         if !vertices.is_empty() {
-            let vertex_buffer = self.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("Vertex Buffer"),
-                contents: bytemuck::cast_slice(&vertices),
-                usage: wgpu::BufferUsages::VERTEX,
-            });
+            let vertex_buffer = self
+                .device
+                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                    label: Some("Vertex Buffer"),
+                    contents: bytemuck::cast_slice(&vertices),
+                    usage: wgpu::BufferUsages::VERTEX,
+                });
 
-            let index_buffer = self.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("Index Buffer"),
-                contents: bytemuck::cast_slice(&indices),
-                usage: wgpu::BufferUsages::INDEX,
-            });
+            let index_buffer = self
+                .device
+                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                    label: Some("Index Buffer"),
+                    contents: bytemuck::cast_slice(&indices),
+                    usage: wgpu::BufferUsages::INDEX,
+                });
 
             {
                 let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
@@ -291,7 +296,13 @@ impl Renderer {
                     vertices.extend_from_slice(&rect_verts);
                     indices.extend(rect_indices.iter().map(|i| i + base_index));
                 }
-                DisplayCommand::Text { text, x, y, color, font_size } => {
+                DisplayCommand::Text {
+                    text,
+                    x,
+                    y,
+                    color,
+                    font_size,
+                } => {
                     // Simple text rendering as rectangles (placeholder)
                     // Real implementation would use font rasterization
                     let char_width = font_size * 0.6;
@@ -310,13 +321,16 @@ impl Renderer {
                         current_x += char_width;
                     }
                 }
-                DisplayCommand::Border { rect, widths, colors } => {
+                DisplayCommand::Border {
+                    rect,
+                    widths,
+                    colors,
+                } => {
                     // Top border
                     if widths.0 > 0.0 {
                         let base_index = vertices.len() as u16;
-                        let (verts, idx) = create_rect_vertices(
-                            rect.x, rect.y, rect.width, widths.0, colors.0,
-                        );
+                        let (verts, idx) =
+                            create_rect_vertices(rect.x, rect.y, rect.width, widths.0, colors.0);
                         vertices.extend_from_slice(&verts);
                         indices.extend(idx.iter().map(|i| i + base_index));
                     }
@@ -324,8 +338,11 @@ impl Renderer {
                     if widths.1 > 0.0 {
                         let base_index = vertices.len() as u16;
                         let (verts, idx) = create_rect_vertices(
-                            rect.x + rect.width - widths.1, rect.y,
-                            widths.1, rect.height, colors.1,
+                            rect.x + rect.width - widths.1,
+                            rect.y,
+                            widths.1,
+                            rect.height,
+                            colors.1,
                         );
                         vertices.extend_from_slice(&verts);
                         indices.extend(idx.iter().map(|i| i + base_index));
@@ -334,8 +351,11 @@ impl Renderer {
                     if widths.2 > 0.0 {
                         let base_index = vertices.len() as u16;
                         let (verts, idx) = create_rect_vertices(
-                            rect.x, rect.y + rect.height - widths.2,
-                            rect.width, widths.2, colors.2,
+                            rect.x,
+                            rect.y + rect.height - widths.2,
+                            rect.width,
+                            widths.2,
+                            colors.2,
                         );
                         vertices.extend_from_slice(&verts);
                         indices.extend(idx.iter().map(|i| i + base_index));
@@ -343,9 +363,8 @@ impl Renderer {
                     // Left border
                     if widths.3 > 0.0 {
                         let base_index = vertices.len() as u16;
-                        let (verts, idx) = create_rect_vertices(
-                            rect.x, rect.y, widths.3, rect.height, colors.3,
-                        );
+                        let (verts, idx) =
+                            create_rect_vertices(rect.x, rect.y, widths.3, rect.height, colors.3);
                         vertices.extend_from_slice(&verts);
                         indices.extend(idx.iter().map(|i| i + base_index));
                     }
