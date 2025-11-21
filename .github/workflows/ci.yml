@@ -113,7 +113,54 @@ jobs:
           path: target/release/browser
           retention-days: 7
 
-  # Stage 4: Build macOS
+  # Stage 4: Smoke Test (verify app starts without crashing)
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev xvfb libgl1-mesa-dri
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-smoke-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-smoke-
+
+      - name: Build debug
+        run: cargo build --verbose
+
+      - name: Run smoke test
+        run: |
+          # Run with virtual display and timeout after 5 seconds
+          # Exit code 124 from timeout is success (app ran without crash)
+          timeout 5 xvfb-run -a cargo run || EXIT_CODE=$?
+          if [ "${EXIT_CODE:-0}" -eq 124 ]; then
+            echo "App started successfully (timed out as expected)"
+            exit 0
+          elif [ "${EXIT_CODE:-0}" -eq 0 ]; then
+            echo "App exited cleanly"
+            exit 0
+          else
+            echo "App crashed with exit code $EXIT_CODE"
+            exit 1
+          fi
+
+  # Stage 5: Build macOS
   build-macos:
     name: Build macOS
     runs-on: macos-latest
