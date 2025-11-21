@@ -81,8 +81,7 @@ impl Default for Color {
 }
 
 /// CSS Length unit
-#[derive(Debug, Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub enum Length {
     Px(f32),
     Em(f32),
@@ -144,10 +143,8 @@ impl Length {
     }
 }
 
-
 /// CSS Display value
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Display {
     Block,
     #[default]
@@ -173,7 +170,6 @@ impl Display {
         }
     }
 }
-
 
 /// Generic CSS value
 #[derive(Debug, Clone, PartialEq)]
