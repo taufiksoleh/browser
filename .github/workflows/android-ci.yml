@@ -217,7 +217,7 @@ jobs:
         working-directory: android
         run: |
           echo "Verifying Release APK..."
-          APK_PATH="app/build/outputs/apk/release/app-release-unsigned.apk"
+          APK_PATH="app/build/outputs/apk/release/app-release.apk"
 
           if [ -f "$APK_PATH" ]; then
             echo "✓ Release APK created successfully"
@@ -248,7 +248,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: browser-release-apk
-          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
 
   # ============================================================================
