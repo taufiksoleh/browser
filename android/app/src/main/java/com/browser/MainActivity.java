@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,6 +20,15 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
 
@@ -31,12 +41,22 @@ public class MainActivity extends Activity {
     private ImageButton homeButton;
 
     private static final String DEFAULT_URL = "https://www.google.com";
+    private static final String TAG = "MainActivity";
+    private static final String CRASH_LOG_FILE = "crash.log";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        // Setup crash handler
+        setupCrashHandler();
+
+        // Check for previous crash
+        checkForPreviousCrash();
+
+        try {
+            setContentView(R.layout.activity_main);
 
         // Initialize views
         webView = findViewById(R.id.webView);
@@ -148,17 +168,129 @@ public class MainActivity extends Activity {
 
         homeButton.setOnClickListener(v -> loadUrl(DEFAULT_URL));
 
-        // Handle intent
-        Intent intent = getIntent();
-        String url = intent.getDataString();
+            // Handle intent
+            Intent intent = getIntent();
+            String url = intent.getDataString();
 
-        if (url != null && !url.isEmpty()) {
-            loadUrl(url);
-        } else if (savedInstanceState != null) {
-            webView.restoreState(savedInstanceState);
-        } else {
-            loadUrl(DEFAULT_URL);
+            if (url != null && !url.isEmpty()) {
+                loadUrl(url);
+            } else if (savedInstanceState != null) {
+                webView.restoreState(savedInstanceState);
+            } else {
+                loadUrl(DEFAULT_URL);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate", e);
+            showCrashDialog("Initialization Error", e);
         }
+    }
+
+    private void setupCrashHandler() {
+        final Thread.UncaughtExceptionHandler defaultHandler =
+            Thread.getDefaultUncaughtExceptionHandler();
+
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            try {
+                // Log crash to file
+                logCrashToFile(throwable);
+
+                // Log to Android log
+                Log.e(TAG, "Uncaught exception", throwable);
+            } catch (Exception e) {
+                Log.e(TAG, "Error logging crash", e);
+            } finally {
+                // Call default handler
+                if (defaultHandler != null) {
+                    defaultHandler.uncaughtException(thread, throwable);
+                }
+            }
+        });
+    }
+
+    private void logCrashToFile(Throwable throwable) {
+        try {
+            File crashFile = new File(getFilesDir(), CRASH_LOG_FILE);
+            FileWriter writer = new FileWriter(crashFile);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.US);
+            writer.write("Crash Time: " + dateFormat.format(new Date()) + "\n");
+            writer.write("Build Type: " + BuildConfig.BUILD_TYPE + "\n");
+            writer.write("Version: " + BuildConfig.VERSION_NAME + "\n\n");
+
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            throwable.printStackTrace(pw);
+            writer.write(sw.toString());
+
+            writer.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to write crash log", e);
+        }
+    }
+
+    private void checkForPreviousCrash() {
+        try {
+            File crashFile = new File(getFilesDir(), CRASH_LOG_FILE);
+            if (crashFile.exists()) {
+                // Read crash log
+                java.io.FileReader reader = new java.io.FileReader(crashFile);
+                java.io.BufferedReader bufferedReader = new java.io.BufferedReader(reader);
+                StringBuilder crashLog = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    crashLog.append(line).append("\n");
+                }
+                bufferedReader.close();
+
+                // Show crash dialog
+                final String crashMessage = crashLog.toString();
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Previous Crash Detected")
+                        .setMessage("The app crashed previously. Details:\n\n" + crashMessage)
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            // Delete crash log after showing
+                            crashFile.delete();
+                        })
+                        .setNegativeButton("Copy Log", (dialog, which) -> {
+                            android.content.ClipboardManager clipboard =
+                                (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                            android.content.ClipData clip =
+                                android.content.ClipData.newPlainText("Crash Log", crashMessage);
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(MainActivity.this,
+                                "Crash log copied to clipboard", Toast.LENGTH_SHORT).show();
+                            crashFile.delete();
+                        })
+                        .setCancelable(false)
+                        .show();
+                });
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking for previous crash", e);
+        }
+    }
+
+    private void showCrashDialog(String title, Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String stackTrace = sw.toString();
+
+        new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage("An error occurred:\n\n" + e.getMessage() + "\n\n" + stackTrace)
+            .setPositiveButton("OK", null)
+            .setNegativeButton("Copy", (dialog, which) -> {
+                android.content.ClipboardManager clipboard =
+                    (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                android.content.ClipData clip =
+                    android.content.ClipData.newPlainText("Error", stackTrace);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, "Error copied to clipboard", Toast.LENGTH_SHORT).show();
+            })
+            .show();
     }
 
     private void loadUrl(String url) {
