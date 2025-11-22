@@ -1,6 +1,6 @@
 # Browser
 
-A web browser project with two implementations:
+A web browser project with three implementations across multiple platforms:
 
 ## CEF Browser (Recommended)
 
@@ -66,21 +66,57 @@ cargo test --all-features
 
 ---
 
+## Android Browser
+
+A native Android web browser built using **Android WebView** with Chromium rendering engine.
+
+### Features
+
+- Full Chromium Engine via Android WebView
+- Native Android UI with Material Design
+- Modern web standards (ES6+, WebGL, WebAssembly)
+- Fast and lightweight
+- Privacy focused
+
+**See [android/README.md](android/README.md) for build instructions.**
+
+### Quick Start (Android)
+
+```bash
+cd android
+./gradlew assembleDebug
+```
+
+Install on device:
+```bash
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Requirements
+
+- Android 7.0 (API level 24) or higher
+- JDK 17 or newer
+- Android SDK (for building)
+
+---
+
 ## CI/CD Pipeline
 
 The project includes GitHub Actions workflows that:
 
-- **Lint**: Check formatting and run clippy
-- **Test**: Run unit tests
-- **Build**: Build for Linux and macOS targets
+- **CEF Browser**: Lint, build (Linux/macOS), unit tests, smoke tests, security scan
+- **Rust Browser**: Lint, test, build for Linux and macOS targets
+- **Android Browser**: Lint, build debug/release APKs, unit tests, security scan
 
 ### Supported Platforms
 
-| Platform | Architecture | Status |
-|----------|-------------|--------|
-| Linux    | x86_64      | ✅     |
-| macOS    | x86_64      | ✅     |
-| macOS    | ARM64       | ✅     |
+| Platform | Architecture | Implementation | Status |
+|----------|-------------|----------------|--------|
+| Linux    | x86_64      | CEF, Rust      | ✅     |
+| macOS    | x86_64      | CEF, Rust      | ✅     |
+| macOS    | ARM64       | Rust           | ✅     |
+| Windows  | x86_64      | CEF, Rust      | ✅     |
+| Android  | ARM64, ARMv7, x86_64 | Android WebView | ✅     |
 
 ## License
 
