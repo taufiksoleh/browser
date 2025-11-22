@@ -17,6 +17,10 @@
 #include <unistd.h>
 #endif
 
+#if defined(OS_MAC)
+#include <mach-o/dyld.h>
+#endif
+
 std::string GetDataURI(const std::string& data, const std::string& mime_type) {
     return "data:" + mime_type + ";base64," +
            CefURIEncode(CefBase64Encode(data.data(), data.size()), false).ToString();
