@@ -42,7 +42,14 @@ android {
 
     lint {
         abortOnError false
-        checkReleaseBuilds false
+        checkReleaseBuilds true
+        lintConfig file("lint.xml")
+        htmlReport true
+        xmlReport true
+        htmlOutput file("build/reports/lint-results.html")
+        xmlOutput file("build/reports/lint-results.xml")
+        disable 'MissingTranslation'
+        warningsAsErrors false
     }
 }
 

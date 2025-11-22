@@ -19,7 +19,6 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -184,9 +183,9 @@ public class MainActivity extends Activity {
 
     private void showError(String message) {
         new AlertDialog.Builder(this)
-            .setTitle("Error")
+            .setTitle(R.string.error_title)
             .setMessage(message)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(R.string.ok, null)
             .show();
     }
 
@@ -196,6 +195,7 @@ public class MainActivity extends Activity {
         webView.saveState(outState);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onBackPressed() {
         if (webView.canGoBack()) {

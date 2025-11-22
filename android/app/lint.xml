@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Ignore missing translations for now -->
+    <issue id="MissingTranslation" severity="ignore" />
+
+    <!-- We're intentionally using Activity instead of AppCompatActivity for minimal dependencies -->
+    <issue id="AppCompatMethod" severity="ignore" />
+
+    <!-- JavaScript is required for a browser -->
+    <issue id="SetJavaScriptEnabled" severity="ignore" />
+
+    <!-- File access is needed for local file browsing -->
+    <issue id="SetAllowFileAccess" severity="ignore" />
+
+    <!-- Mixed content mode is acceptable for a general-purpose browser -->
+    <issue id="WebViewClientOnReceivedSslError" severity="warning" />
+
+    <!-- Icon densities - we have vector drawables which work for all densities -->
+    <issue id="IconDensities" severity="ignore" />
+    <issue id="IconMissingDensityFolder" severity="ignore" />
+
+    <!-- Adaptive icon is provided -->
+    <issue id="IconLauncherShape" severity="ignore" />
+
+    <!-- Overdraw is acceptable for simple layouts -->
+    <issue id="Overdraw" severity="informational" />
+
+    <!-- Allow hardcoded colors in icon resources -->
+    <issue id="HardcodedText" severity="warning">
+        <ignore path="**/res/drawable/*.xml" />
+        <ignore path="**/res/mipmap-*/*.xml" />
+    </issue>
+
+    <!-- Suppress warnings about using deprecated APIs when properly suppressed -->
+    <issue id="Deprecated" severity="informational" />
+
+    <!-- Allow older SDK versions -->
+    <issue id="OldTargetApi" severity="informational" />
+
+    <!-- Performance optimizations are informational -->
+    <issue id="UnusedResources" severity="informational" />
+
+    <!-- Accessibility - warn but don't fail -->
+    <issue id="ContentDescription" severity="warning" />
+
+    <!-- Allow usage of VIEW intent action -->
+    <issue id="IntentFilterExportedReceiver" severity="warning" />
+</lint>
