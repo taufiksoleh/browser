@@ -8,19 +8,18 @@
 #include "include/wrapper/cef_helpers.h"
 
 #if defined(OS_WIN)
-#include <windows.h>
 #include <shlobj.h>
+#include <windows.h>
 #elif defined(OS_LINUX) || defined(OS_MAC)
-#include <unistd.h>
 #include <pwd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 #endif
 
 std::string GetDataURI(const std::string& data, const std::string& mime_type) {
     return "data:" + mime_type + ";base64," +
-           CefURIEncode(CefBase64Encode(data.data(), data.size()), false)
-               .ToString();
+           CefURIEncode(CefBase64Encode(data.data(), data.size()), false).ToString();
 }
 
 bool LoadBinaryResource(const char* resource_name, std::string& resource_data) {
@@ -139,8 +138,7 @@ bool CreateDirectory(const std::string& path) {
     }
 
 #if defined(OS_WIN)
-    return CreateDirectoryA(path.c_str(), nullptr) ||
-           GetLastError() == ERROR_ALREADY_EXISTS;
+    return CreateDirectoryA(path.c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;
 #else
     return mkdir(path.c_str(), 0755) == 0 || errno == EEXIST;
 #endif

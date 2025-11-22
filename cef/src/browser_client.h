@@ -6,13 +6,13 @@
 #include <string>
 
 #include "include/cef_client.h"
-#include "include/cef_life_span_handler.h"
+#include "include/cef_context_menu_handler.h"
 #include "include/cef_display_handler.h"
+#include "include/cef_download_handler.h"
+#include "include/cef_keyboard_handler.h"
+#include "include/cef_life_span_handler.h"
 #include "include/cef_load_handler.h"
 #include "include/cef_request_handler.h"
-#include "include/cef_context_menu_handler.h"
-#include "include/cef_keyboard_handler.h"
-#include "include/cef_download_handler.h"
 
 // Browser client that handles browser events and callbacks
 class BrowserClient : public CefClient,
@@ -37,90 +37,61 @@ public:
     CefRefPtr<CefDownloadHandler> GetDownloadHandler() override { return this; }
 
     // CefLifeSpanHandler methods
-    bool OnBeforePopup(CefRefPtr<CefBrowser> browser,
-                       CefRefPtr<CefFrame> frame,
-                       const CefString& target_url,
-                       const CefString& target_frame_name,
+    bool OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                       const CefString& target_url, const CefString& target_frame_name,
                        CefLifeSpanHandler::WindowOpenDisposition target_disposition,
-                       bool user_gesture,
-                       const CefPopupFeatures& popupFeatures,
-                       CefWindowInfo& windowInfo,
-                       CefRefPtr<CefClient>& client,
-                       CefBrowserSettings& settings,
-                       CefRefPtr<CefDictionaryValue>& extra_info,
+                       bool user_gesture, const CefPopupFeatures& popupFeatures,
+                       CefWindowInfo& windowInfo, CefRefPtr<CefClient>& client,
+                       CefBrowserSettings& settings, CefRefPtr<CefDictionaryValue>& extra_info,
                        bool* no_javascript_access) override;
     void OnAfterCreated(CefRefPtr<CefBrowser> browser) override;
     bool DoClose(CefRefPtr<CefBrowser> browser) override;
     void OnBeforeClose(CefRefPtr<CefBrowser> browser) override;
 
     // CefDisplayHandler methods
-    void OnTitleChange(CefRefPtr<CefBrowser> browser,
-                       const CefString& title) override;
-    void OnAddressChange(CefRefPtr<CefBrowser> browser,
-                         CefRefPtr<CefFrame> frame,
+    void OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title) override;
+    void OnAddressChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                          const CefString& url) override;
-    void OnFullscreenModeChange(CefRefPtr<CefBrowser> browser,
-                                bool fullscreen) override;
-    bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
-                          cef_log_severity_t level,
-                          const CefString& message,
-                          const CefString& source,
-                          int line) override;
+    void OnFullscreenModeChange(CefRefPtr<CefBrowser> browser, bool fullscreen) override;
+    bool OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level,
+                          const CefString& message, const CefString& source, int line) override;
 
     // CefLoadHandler methods
-    void OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
-                              bool isLoading,
-                              bool canGoBack,
+    void OnLoadingStateChange(CefRefPtr<CefBrowser> browser, bool isLoading, bool canGoBack,
                               bool canGoForward) override;
-    void OnLoadStart(CefRefPtr<CefBrowser> browser,
-                     CefRefPtr<CefFrame> frame,
+    void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                      TransitionType transition_type) override;
-    void OnLoadEnd(CefRefPtr<CefBrowser> browser,
-                   CefRefPtr<CefFrame> frame,
+    void OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                    int httpStatusCode) override;
-    void OnLoadError(CefRefPtr<CefBrowser> browser,
-                     CefRefPtr<CefFrame> frame,
-                     ErrorCode errorCode,
-                     const CefString& errorText,
-                     const CefString& failedUrl) override;
+    void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode,
+                     const CefString& errorText, const CefString& failedUrl) override;
 
     // CefRequestHandler methods
-    bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
-                        CefRefPtr<CefFrame> frame,
-                        CefRefPtr<CefRequest> request,
-                        bool user_gesture,
+    bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                        CefRefPtr<CefRequest> request, bool user_gesture,
                         bool is_redirect) override;
 
     // CefContextMenuHandler methods
-    void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
-                             CefRefPtr<CefFrame> frame,
+    void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                              CefRefPtr<CefContextMenuParams> params,
                              CefRefPtr<CefMenuModel> model) override;
-    bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
-                              CefRefPtr<CefFrame> frame,
-                              CefRefPtr<CefContextMenuParams> params,
-                              int command_id,
+    bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                              CefRefPtr<CefContextMenuParams> params, int command_id,
                               EventFlags event_flags) override;
 
     // CefKeyboardHandler methods
-    bool OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
-                       const CefKeyEvent& event,
-                       CefEventHandle os_event,
-                       bool* is_keyboard_shortcut) override;
-    bool OnKeyEvent(CefRefPtr<CefBrowser> browser,
-                    const CefKeyEvent& event,
+    bool OnPreKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event,
+                       CefEventHandle os_event, bool* is_keyboard_shortcut) override;
+    bool OnKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event,
                     CefEventHandle os_event) override;
 
     // CefDownloadHandler methods
-    bool CanDownload(CefRefPtr<CefBrowser> browser,
-                     const CefString& url,
+    bool CanDownload(CefRefPtr<CefBrowser> browser, const CefString& url,
                      const CefString& request_method) override;
-    void OnBeforeDownload(CefRefPtr<CefBrowser> browser,
-                          CefRefPtr<CefDownloadItem> download_item,
+    void OnBeforeDownload(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDownloadItem> download_item,
                           const CefString& suggested_name,
                           CefRefPtr<CefBeforeDownloadCallback> callback) override;
-    void OnDownloadUpdated(CefRefPtr<CefBrowser> browser,
-                           CefRefPtr<CefDownloadItem> download_item,
+    void OnDownloadUpdated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDownloadItem> download_item,
                            CefRefPtr<CefDownloadItemCallback> callback) override;
 
     // Browser access

@@ -7,9 +7,8 @@
 
 BrowserApp::BrowserApp() {}
 
-void BrowserApp::OnBeforeCommandLineProcessing(
-    const CefString& process_type,
-    CefRefPtr<CefCommandLine> command_line) {
+void BrowserApp::OnBeforeCommandLineProcessing(const CefString& process_type,
+                                               CefRefPtr<CefCommandLine> command_line) {
     // Add command line switches for better performance and compatibility
 
     // Enable hardware acceleration
@@ -56,9 +55,8 @@ void BrowserApp::OnWebKitInitialized() {
     // This is where you can register custom JavaScript bindings
 }
 
-void BrowserApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
-                                   CefRefPtr<CefFrame> frame,
-                                   CefRefPtr<CefV8Context> context) {
+void BrowserApp::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                  CefRefPtr<CefV8Context> context) {
     // Called when a new V8 context is created
     // You can inject custom JavaScript objects here
 
@@ -69,22 +67,18 @@ void BrowserApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefV8Value> browserObj = CefV8Value::CreateObject(nullptr, nullptr);
 
     // Add version property
-    browserObj->SetValue("version",
-                         CefV8Value::CreateString("CEF Browser 1.0.0"),
+    browserObj->SetValue("version", CefV8Value::CreateString("CEF Browser 1.0.0"),
                          V8_PROPERTY_ATTRIBUTE_READONLY);
 
     // Add platform property
 #if defined(OS_WIN)
-    browserObj->SetValue("platform",
-                         CefV8Value::CreateString("windows"),
+    browserObj->SetValue("platform", CefV8Value::CreateString("windows"),
                          V8_PROPERTY_ATTRIBUTE_READONLY);
 #elif defined(OS_LINUX)
-    browserObj->SetValue("platform",
-                         CefV8Value::CreateString("linux"),
+    browserObj->SetValue("platform", CefV8Value::CreateString("linux"),
                          V8_PROPERTY_ATTRIBUTE_READONLY);
 #elif defined(OS_MAC)
-    browserObj->SetValue("platform",
-                         CefV8Value::CreateString("macos"),
+    browserObj->SetValue("platform", CefV8Value::CreateString("macos"),
                          V8_PROPERTY_ATTRIBUTE_READONLY);
 #endif
 

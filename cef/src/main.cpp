@@ -91,10 +91,7 @@ int RunMain(int argc, char* argv[]) {
 }  // namespace
 
 #if defined(OS_WIN)
-int WINAPI WinMain(HINSTANCE hInstance,
-                   HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine,
-                   int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     return RunMain(__argc, __argv);
 }
 #else

@@ -7,8 +7,8 @@
 
 #include "include/cef_app.h"
 #include "include/cef_parser.h"
-#include "include/wrapper/cef_helpers.h"
 #include "include/wrapper/cef_closure_task.h"
+#include "include/wrapper/cef_helpers.h"
 
 int BrowserClient::browser_count_ = 0;
 
@@ -29,24 +29,18 @@ BrowserClient::~BrowserClient() {}
 // CefLifeSpanHandler methods
 // ============================================================================
 
-bool BrowserClient::OnBeforePopup(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame,
-    const CefString& target_url,
-    const CefString& target_frame_name,
-    CefLifeSpanHandler::WindowOpenDisposition target_disposition,
-    bool user_gesture,
-    const CefPopupFeatures& popupFeatures,
-    CefWindowInfo& windowInfo,
-    CefRefPtr<CefClient>& client,
-    CefBrowserSettings& settings,
-    CefRefPtr<CefDictionaryValue>& extra_info,
-    bool* no_javascript_access) {
+bool BrowserClient::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                  const CefString& target_url, const CefString& target_frame_name,
+                                  CefLifeSpanHandler::WindowOpenDisposition target_disposition,
+                                  bool user_gesture, const CefPopupFeatures& popupFeatures,
+                                  CefWindowInfo& windowInfo, CefRefPtr<CefClient>& client,
+                                  CefBrowserSettings& settings,
+                                  CefRefPtr<CefDictionaryValue>& extra_info,
+                                  bool* no_javascript_access) {
     CEF_REQUIRE_UI_THREAD();
 
     // Open popups in a new tab instead of a new window
-    if (target_disposition == CEF_WOD_NEW_POPUP ||
-        target_disposition == CEF_WOD_NEW_WINDOW) {
+    if (target_disposition == CEF_WOD_NEW_POPUP || target_disposition == CEF_WOD_NEW_WINDOW) {
         // Load the URL in the current browser
         browser->GetMainFrame()->LoadURL(target_url);
         return true;  // Cancel popup
@@ -102,8 +96,7 @@ void BrowserClient::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
 // CefDisplayHandler methods
 // ============================================================================
 
-void BrowserClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
-                                   const CefString& title) {
+void BrowserClient::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title) {
     CEF_REQUIRE_UI_THREAD();
 
     // Update window title
@@ -126,9 +119,8 @@ void BrowserClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
 #endif
 }
 
-void BrowserClient::OnAddressChange(CefRefPtr<CefBrowser> browser,
-                                     CefRefPtr<CefFrame> frame,
-                                     const CefString& url) {
+void BrowserClient::OnAddressChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                    const CefString& url) {
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
@@ -138,19 +130,15 @@ void BrowserClient::OnAddressChange(CefRefPtr<CefBrowser> browser,
     }
 }
 
-void BrowserClient::OnFullscreenModeChange(CefRefPtr<CefBrowser> browser,
-                                            bool fullscreen) {
+void BrowserClient::OnFullscreenModeChange(CefRefPtr<CefBrowser> browser, bool fullscreen) {
     CEF_REQUIRE_UI_THREAD();
 
     // Handle fullscreen mode change
     // UI update would go here
 }
 
-bool BrowserClient::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
-                                      cef_log_severity_t level,
-                                      const CefString& message,
-                                      const CefString& source,
-                                      int line) {
+bool BrowserClient::OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level,
+                                     const CefString& message, const CefString& source, int line) {
     // Log console messages for debugging
     std::string level_str;
     switch (level) {
@@ -178,19 +166,16 @@ bool BrowserClient::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
 // CefLoadHandler methods
 // ============================================================================
 
-void BrowserClient::OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
-                                          bool isLoading,
-                                          bool canGoBack,
-                                          bool canGoForward) {
+void BrowserClient::OnLoadingStateChange(CefRefPtr<CefBrowser> browser, bool isLoading,
+                                         bool canGoBack, bool canGoForward) {
     CEF_REQUIRE_UI_THREAD();
 
     // Update loading indicator and navigation buttons
     // UI update would go here
 }
 
-void BrowserClient::OnLoadStart(CefRefPtr<CefBrowser> browser,
-                                 CefRefPtr<CefFrame> frame,
-                                 TransitionType transition_type) {
+void BrowserClient::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                TransitionType transition_type) {
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
@@ -198,9 +183,8 @@ void BrowserClient::OnLoadStart(CefRefPtr<CefBrowser> browser,
     }
 }
 
-void BrowserClient::OnLoadEnd(CefRefPtr<CefBrowser> browser,
-                               CefRefPtr<CefFrame> frame,
-                               int httpStatusCode) {
+void BrowserClient::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                              int httpStatusCode) {
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
@@ -208,11 +192,9 @@ void BrowserClient::OnLoadEnd(CefRefPtr<CefBrowser> browser,
     }
 }
 
-void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser,
-                                 CefRefPtr<CefFrame> frame,
-                                 ErrorCode errorCode,
-                                 const CefString& errorText,
-                                 const CefString& failedUrl) {
+void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                ErrorCode errorCode, const CefString& errorText,
+                                const CefString& failedUrl) {
     CEF_REQUIRE_UI_THREAD();
 
     // Don't display an error for cancelled requests
@@ -222,21 +204,17 @@ void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser,
 
     // Display error page
     std::stringstream ss;
-    ss << "<html><head><title>Load Error</title>"
-       << "<style>"
+    ss << "<html><head><title>Load Error</title>" << "<style>"
        << "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; "
        << "       padding: 50px; text-align: center; background: #f5f5f5; }"
-       << "h1 { color: #333; }"
-       << ".error-code { color: #666; font-size: 14px; }"
+       << "h1 { color: #333; }" << ".error-code { color: #666; font-size: 14px; }"
        << ".url { color: #0066cc; word-break: break-all; }"
        << ".retry-btn { margin-top: 20px; padding: 10px 20px; "
        << "             background: #0066cc; color: white; border: none; "
        << "             border-radius: 5px; cursor: pointer; font-size: 16px; }"
-       << ".retry-btn:hover { background: #0055aa; }"
-       << "</style></head><body>"
+       << ".retry-btn:hover { background: #0055aa; }" << "</style></head><body>"
        << "<h1>This page isn't working</h1>"
-       << "<p class='error-code'>Error: " << errorText.ToString()
-       << " (" << errorCode << ")</p>"
+       << "<p class='error-code'>Error: " << errorText.ToString() << " (" << errorCode << ")</p>"
        << "<p class='url'>" << failedUrl.ToString() << "</p>"
        << "<button class='retry-btn' onclick='location.reload()'>Retry</button>"
        << "</body></html>";
@@ -248,11 +226,9 @@ void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser,
 // CefRequestHandler methods
 // ============================================================================
 
-bool BrowserClient::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
-                                    CefRefPtr<CefFrame> frame,
-                                    CefRefPtr<CefRequest> request,
-                                    bool user_gesture,
-                                    bool is_redirect) {
+bool BrowserClient::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                   CefRefPtr<CefRequest> request, bool user_gesture,
+                                   bool is_redirect) {
     CEF_REQUIRE_UI_THREAD();
 
     // Allow all navigation by default
@@ -263,10 +239,9 @@ bool BrowserClient::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
 // CefContextMenuHandler methods
 // ============================================================================
 
-void BrowserClient::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
-                                         CefRefPtr<CefFrame> frame,
-                                         CefRefPtr<CefContextMenuParams> params,
-                                         CefRefPtr<CefMenuModel> model) {
+void BrowserClient::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                        CefRefPtr<CefContextMenuParams> params,
+                                        CefRefPtr<CefMenuModel> model) {
     CEF_REQUIRE_UI_THREAD();
 
     // Add separator
@@ -282,11 +257,9 @@ void BrowserClient::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
     model->AddItem(CLIENT_MENU_COPY_URL, "Copy URL");
 }
 
-bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
-                                          CefRefPtr<CefFrame> frame,
-                                          CefRefPtr<CefContextMenuParams> params,
-                                          int command_id,
-                                          EventFlags event_flags) {
+bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                         CefRefPtr<CefContextMenuParams> params, int command_id,
+                                         EventFlags event_flags) {
     CEF_REQUIRE_UI_THREAD();
 
     switch (command_id) {
@@ -300,8 +273,7 @@ bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
 #if defined(OS_WIN)
             windowInfo.SetAsPopup(nullptr, "DevTools");
 #endif
-            browser->GetHost()->ShowDevTools(windowInfo, nullptr, settings,
-                                              CefPoint());
+            browser->GetHost()->ShowDevTools(windowInfo, nullptr, settings, CefPoint());
             return true;
         }
 
@@ -327,10 +299,8 @@ bool BrowserClient::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
 // CefKeyboardHandler methods
 // ============================================================================
 
-bool BrowserClient::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
-                                   const CefKeyEvent& event,
-                                   CefEventHandle os_event,
-                                   bool* is_keyboard_shortcut) {
+bool BrowserClient::OnPreKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event,
+                                  CefEventHandle os_event, bool* is_keyboard_shortcut) {
     CEF_REQUIRE_UI_THREAD();
 
     // Handle keyboard shortcuts
@@ -339,8 +309,7 @@ bool BrowserClient::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
         bool shift_down = (event.modifiers & EVENTFLAG_SHIFT_DOWN) != 0;
 
         // Ctrl+R or F5: Reload
-        if ((ctrl_down && event.windows_key_code == 'R') ||
-            event.windows_key_code == 0x74) {  // F5
+        if ((ctrl_down && event.windows_key_code == 'R') || event.windows_key_code == 0x74) {  // F5
             if (shift_down) {
                 browser->ReloadIgnoreCache();
             } else {
@@ -354,8 +323,7 @@ bool BrowserClient::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
             event.windows_key_code == 0x7B) {  // F12
             CefWindowInfo windowInfo;
             CefBrowserSettings settings;
-            browser->GetHost()->ShowDevTools(windowInfo, nullptr, settings,
-                                              CefPoint());
+            browser->GetHost()->ShowDevTools(windowInfo, nullptr, settings, CefPoint());
             return true;
         }
 
@@ -393,9 +361,8 @@ bool BrowserClient::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
     return false;
 }
 
-bool BrowserClient::OnKeyEvent(CefRefPtr<CefBrowser> browser,
-                                const CefKeyEvent& event,
-                                CefEventHandle os_event) {
+bool BrowserClient::OnKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event,
+                               CefEventHandle os_event) {
     return false;
 }
 
@@ -403,28 +370,25 @@ bool BrowserClient::OnKeyEvent(CefRefPtr<CefBrowser> browser,
 // CefDownloadHandler methods
 // ============================================================================
 
-bool BrowserClient::CanDownload(CefRefPtr<CefBrowser> browser,
-                                 const CefString& url,
-                                 const CefString& request_method) {
+bool BrowserClient::CanDownload(CefRefPtr<CefBrowser> browser, const CefString& url,
+                                const CefString& request_method) {
     // Allow all downloads
     return true;
 }
 
-void BrowserClient::OnBeforeDownload(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefDownloadItem> download_item,
-    const CefString& suggested_name,
-    CefRefPtr<CefBeforeDownloadCallback> callback) {
+void BrowserClient::OnBeforeDownload(CefRefPtr<CefBrowser> browser,
+                                     CefRefPtr<CefDownloadItem> download_item,
+                                     const CefString& suggested_name,
+                                     CefRefPtr<CefBeforeDownloadCallback> callback) {
     CEF_REQUIRE_UI_THREAD();
 
     // Continue download with default path and show save dialog
     callback->Continue("", true);
 }
 
-void BrowserClient::OnDownloadUpdated(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefDownloadItem> download_item,
-    CefRefPtr<CefDownloadItemCallback> callback) {
+void BrowserClient::OnDownloadUpdated(CefRefPtr<CefBrowser> browser,
+                                      CefRefPtr<CefDownloadItem> download_item,
+                                      CefRefPtr<CefDownloadItemCallback> callback) {
     CEF_REQUIRE_UI_THREAD();
 
     if (download_item->IsComplete()) {

@@ -46,12 +46,10 @@ void BrowserWindow::Create() {
     wcex.lpszClassName = "CEFBrowserWindow";
     RegisterClassEx(&wcex);
 
-    HWND hwnd = CreateWindowEx(
-        0, "CEFBrowserWindow", "CEF Browser",
-        WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        kDefaultWidth, kDefaultHeight,
-        nullptr, nullptr, GetModuleHandle(nullptr), nullptr);
+    HWND hwnd =
+        CreateWindowEx(0, "CEFBrowserWindow", "CEF Browser", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                       CW_USEDEFAULT, CW_USEDEFAULT, kDefaultWidth, kDefaultHeight, nullptr,
+                       nullptr, GetModuleHandle(nullptr), nullptr);
 
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);
@@ -68,13 +66,9 @@ void BrowserWindow::Create() {
 #endif
 
     // Create the browser
-    CefBrowserHost::CreateBrowser(
-        window_info,
-        g_browser_client,
-        kDefaultUrl,
-        browser_settings,
-        nullptr,  // extra_info
-        nullptr   // request_context
+    CefBrowserHost::CreateBrowser(window_info, g_browser_client, kDefaultUrl, browser_settings,
+                                  nullptr,  // extra_info
+                                  nullptr   // request_context
     );
 }
 
