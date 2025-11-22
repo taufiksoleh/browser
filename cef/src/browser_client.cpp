@@ -217,8 +217,8 @@ void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
        << ".retry-btn:hover { background: #0055aa; }"
        << "</style></head><body>"
        << "<h1>This page isn't working</h1>"
-       << "<p class='error-code'>Error: " << errorText.ToString() << " (" << errorCode
-       << ")</p>"
+       << "<p class='error-code'>Error: " << errorText.ToString() << " ("
+       << errorCode << ")</p>"
        << "<p class='url'>" << failedUrl.ToString() << "</p>"
        << "<button class='retry-btn' onclick='location.reload()'>Retry</button>"
        << "</body></html>";
