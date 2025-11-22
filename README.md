@@ -1,8 +1,34 @@
 # Browser
 
-A production-ready web browser built in Rust with GPU-accelerated rendering.
+A web browser project with two implementations:
 
-## Features
+## CEF Browser (Recommended)
+
+A production-ready web browser built using the **Chromium Embedded Framework (CEF)**. This provides full Chromium functionality including:
+
+- Complete HTML5, CSS3, and JavaScript support
+- GPU-accelerated rendering
+- Modern web standards (ES6+, WebGL, WebAssembly, Service Workers)
+- Built-in Chrome DevTools
+- Cross-platform support (Windows, macOS, Linux)
+
+**See [cef/README.md](cef/README.md) for build instructions.**
+
+### Quick Start (CEF)
+```bash
+cd cef
+./build.sh Release
+cd build
+./cef_browser
+```
+
+---
+
+## Rust Browser (Experimental)
+
+An experimental web browser built from scratch in Rust with GPU-accelerated rendering.
+
+### Features
 
 - HTML5 parsing with `html5ever`
 - CSS parsing and selectors
@@ -11,7 +37,7 @@ A production-ready web browser built in Rust with GPU-accelerated rendering.
 - Font rendering with `rusttype` and `fontdue`
 - Cross-platform window management with `winit`
 
-## Requirements
+### Requirements
 
 - Rust 1.70+
 - System dependencies:
@@ -19,7 +45,7 @@ A production-ready web browser built in Rust with GPU-accelerated rendering.
   - **macOS**: Xcode Command Line Tools
   - **Windows**: Visual Studio Build Tools
 
-## Building
+### Building (Rust)
 
 ```bash
 # Debug build
@@ -32,11 +58,13 @@ cargo build --release
 cargo run
 ```
 
-## Testing
+### Testing
 
 ```bash
 cargo test --all-features
 ```
+
+---
 
 ## CI/CD Pipeline
 
