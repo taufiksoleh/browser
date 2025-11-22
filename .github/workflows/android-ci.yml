@@ -33,6 +33,17 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Setup Gradle wrapper
+        working-directory: android
+        run: |
+          # Download Gradle wrapper JAR if missing
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            echo "Downloading Gradle wrapper JAR..."
+            mkdir -p gradle/wrapper
+            curl -L -o gradle/wrapper/gradle-wrapper.jar \
+              https://raw.githubusercontent.com/gradle/gradle/master/gradle/wrapper/gradle-wrapper.jar
+          fi
+
       - name: Grant execute permission for gradlew
         working-directory: android
         run: chmod +x gradlew
@@ -109,6 +120,17 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Setup Gradle wrapper
+        working-directory: android
+        run: |
+          # Download Gradle wrapper JAR if missing
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            echo "Downloading Gradle wrapper JAR..."
+            mkdir -p gradle/wrapper
+            curl -L -o gradle/wrapper/gradle-wrapper.jar \
+              https://raw.githubusercontent.com/gradle/gradle/master/gradle/wrapper/gradle-wrapper.jar
+          fi
+
       - name: Grant execute permission for gradlew
         working-directory: android
         run: chmod +x gradlew
@@ -167,6 +189,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Setup Gradle wrapper
+        working-directory: android
+        run: |
+          # Download Gradle wrapper JAR if missing
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            echo "Downloading Gradle wrapper JAR..."
+            mkdir -p gradle/wrapper
+            curl -L -o gradle/wrapper/gradle-wrapper.jar \
+              https://raw.githubusercontent.com/gradle/gradle/master/gradle/wrapper/gradle-wrapper.jar
+          fi
 
       - name: Grant execute permission for gradlew
         working-directory: android
@@ -235,6 +268,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Setup Gradle wrapper
+        working-directory: android
+        run: |
+          # Download Gradle wrapper JAR if missing
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            echo "Downloading Gradle wrapper JAR..."
+            mkdir -p gradle/wrapper
+            curl -L -o gradle/wrapper/gradle-wrapper.jar \
+              https://raw.githubusercontent.com/gradle/gradle/master/gradle/wrapper/gradle-wrapper.jar
+          fi
 
       - name: Grant execute permission for gradlew
         working-directory: android
