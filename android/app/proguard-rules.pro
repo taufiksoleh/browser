@@ -81,6 +81,23 @@
     public static <fields>;
 }
 -keep class **.R$*
+-keep class **.R { *; }
+
+# Keep all resources
+-keep class **.R$drawable { *; }
+-keep class **.R$layout { *; }
+-keep class **.R$string { *; }
+-keep class **.R$style { *; }
+-keep class **.R$styleable { *; }
+-keep class **.R$attr { *; }
+-keep class **.R$color { *; }
+-keep class **.R$dimen { *; }
+-keep class **.R$id { *; }
+-keep class **.R$mipmap { *; }
+
+# Keep vector drawable classes
+-keep class androidx.vectordrawable.** { *; }
+-dontwarn androidx.vectordrawable.**
 
 # Keep Bundle savedInstanceState classes
 -keepclassmembers class * implements android.os.Parcelable {
