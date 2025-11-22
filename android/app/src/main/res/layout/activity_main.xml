@@ -26,7 +26,7 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/back"
-                android:src="@android:drawable/ic_media_previous" />
+                android:src="@drawable/ic_back" />
 
             <ImageButton
                 android:id="@+id/forwardButton"
@@ -34,7 +34,7 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/forward"
-                android:src="@android:drawable/ic_media_next" />
+                android:src="@drawable/ic_forward" />
 
             <ImageButton
                 android:id="@+id/refreshButton"
@@ -42,7 +42,7 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/refresh"
-                android:src="@android:drawable/ic_popup_sync" />
+                android:src="@drawable/ic_refresh" />
 
             <ImageButton
                 android:id="@+id/homeButton"
@@ -50,7 +50,7 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/home"
-                android:src="@android:drawable/ic_menu_home" />
+                android:src="@drawable/ic_home" />
 
             <!-- URL Bar -->
             <EditText
