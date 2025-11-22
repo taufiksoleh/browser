@@ -204,18 +204,27 @@ void BrowserClient::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
 
     // Display error page
     std::stringstream ss;
-    ss << "<html><head><title>Load Error</title>" << "<style>"
+    ss << "<html><head><title>Load Error</title>"
+       << "<style>"
        << "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; "
        << "       padding: 50px; text-align: center; background: #f5f5f5; }"
-       << "h1 { color: #333; }" << ".error-code { color: #666; font-size: 14px; }"
+       << "h1 { color: #333; }"
+       << ".error-code { color: #666; font-size: 14px; }"
        << ".url { color: #0066cc; word-break: break-all; }"
        << ".retry-btn { margin-top: 20px; padding: 10px 20px; "
        << "             background: #0066cc; color: white; border: none; "
        << "             border-radius: 5px; cursor: pointer; font-size: 16px; }"
-       << ".retry-btn:hover { background: #0055aa; }" << "</style></head><body>"
+       << ".retry-btn:hover { background: #0055aa; }"
+       << "</style></head><body>"
        << "<h1>This page isn't working</h1>"
-       << "<p class='error-code'>Error: " << errorText.ToString() << " (" << errorCode << ")</p>"
-       << "<p class='url'>" << failedUrl.ToString() << "</p>"
+       << "<p class='error-code'>Error: "
+       << errorText.ToString()
+       << " ("
+       << errorCode
+       << ")</p>"
+       << "<p class='url'>"
+       << failedUrl.ToString()
+       << "</p>"
        << "<button class='retry-btn' onclick='location.reload()'>Retry</button>"
        << "</body></html>";
 
